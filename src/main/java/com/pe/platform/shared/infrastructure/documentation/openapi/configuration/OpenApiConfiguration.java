@@ -29,15 +29,15 @@ public class OpenApiConfiguration {
 
         // Add security scheme
 
-        /*final String securitySchemeName = "bearerAuth";
 
-        openApi.addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
-                .components(new Components().addSecuritySchemes(securitySchemeName,
+
+        openApi.addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+                .components(new Components().addSecuritySchemes("bearerAuth",
                                 new SecurityScheme()
-                                        .name(securitySchemeName)
+                                        .name("bearerAuth")
                                         .type(SecurityScheme.Type.HTTP)
                                         .scheme("bearer")
-                                        .bearerFormat("JWT")));*/
+                                        .bearerFormat("JWT")));
 
         return openApi;
     }
