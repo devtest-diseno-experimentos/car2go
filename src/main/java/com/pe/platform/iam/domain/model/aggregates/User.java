@@ -1,7 +1,4 @@
-package com.pe.platform.iam.domain.model.aggregates;
-
-import com.pe.platform.iam.domain.model.entities.Role;
-import com.pe.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+package com.pe.platform.iam.domain.model.aggregates ;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -10,6 +7,9 @@ import lombok.Getter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.pe.platform.iam.domain.model.entities.Role;
+import com.pe.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
 @Getter
 @Entity
