@@ -1,5 +1,4 @@
-package com.pe.platform.iam.domain.model.queries;
+package com.pe.platform.iam.domain.model.queries ;
 
 public record GetUserByUsernameQuery(String username) {
 }
-
