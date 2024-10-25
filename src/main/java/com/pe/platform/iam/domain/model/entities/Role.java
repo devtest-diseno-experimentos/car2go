@@ -1,9 +1,10 @@
 package com.pe.platform.iam.domain.model.entities;
 
-import com.pe.platform.iam.domain.model.valueobjects.Roles;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
+
+import com.pe.platform.iam.domain.model.valueobjects.Roles;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class Role {
     }
 
     public static Role getDefaultRole() {
-        return new Role(Roles.ROLE_BUYER);
+        return new Role(Roles.ROLE_SELLER);
     }
 
     public static Role toRoleFromName(String name) {
