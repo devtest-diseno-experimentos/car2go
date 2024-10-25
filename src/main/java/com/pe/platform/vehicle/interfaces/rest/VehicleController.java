@@ -2,7 +2,10 @@ package com.pe.platform.vehicle.interfaces.rest;
 
 import com.pe.platform.vehicle.domain.model.aggregates.Vehicle;
 import com.pe.platform.vehicle.domain.model.commands.UpdateVehicleCommand;
-import com.pe.platform.vehicle.domain.model.queries.*;
+import com.pe.platform.vehicle.domain.model.queries.GetVehicleByIdQuery;
+import com.pe.platform.vehicle.domain.model.queries.GetAllVehicleByLocationQuery;
+import com.pe.platform.vehicle.domain.model.queries.GetAllVehicleByProfileId;
+import com.pe.platform.vehicle.domain.model.queries.GetAllVehicleQuery;
 import com.pe.platform.vehicle.domain.services.VehicleCommandService;
 import com.pe.platform.vehicle.domain.services.VehicleQueryService;
 import com.pe.platform.vehicle.interfaces.rest.resources.CreateVehicleResource;
@@ -74,22 +77,21 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleResources);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_OWNER')")
-    @PutMapping
-    public ResponseEntity<VehicleResource> updateVehicle(@RequestBody UpdateVehicleResource resource) {
+    @PreAuthorize("hasAuthority('ROLE_SELLER')")
+    @PutMapping("/{vehicleId}")
+    public ResponseEntity<VehicleResource> updateVehicle(@PathVariable int vehicleId, @RequestBody UpdateVehicleResource resource) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         long userId = userDetails.getId();
 
         UpdateVehicleCommand command = UpdateVehicleCommandFromResourceAssembler.toCommandFromResource(resource);
-        Optional<Vehicle> updatedVehicleOptional = vehicleCommandService.handle(command);
+        Optional<Vehicle> updatedVehicleOptional = vehicleCommandService.handle(command, vehicleId);
 
         return updatedVehicleOptional
                 .filter(updatedVehicle -> updatedVehicle.getProfileId() == userId)
                 .map(updatedVehicle -> ResponseEntity.ok(VehicleResourceFromEntityAssembler.toResourceFromEntity(updatedVehicle)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
 
     @GetMapping("/all/vehicles/profile/{profileId}")
     public ResponseEntity<List<VehicleResource>> getAllVehiclesByProfileId(@PathVariable long profileId) {
@@ -100,5 +102,18 @@ public class VehicleController {
         var vehicleResources = vehicles.stream().map(VehicleResourceFromEntityAssembler::toResourceFromEntity).toList();
         return ResponseEntity.ok(vehicleResources);
     }
+    @PreAuthorize("hasAuthority('ROLE_SELLER')")
+    @DeleteMapping("/{vehicleId}")
+    public ResponseEntity<Void> deleteVehicle(@PathVariable int vehicleId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        long userId = userDetails.getId();
 
+        try {
+            vehicleCommandService.deleteVehicle(vehicleId, userId);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(403).build();
+        }
+    }
 }

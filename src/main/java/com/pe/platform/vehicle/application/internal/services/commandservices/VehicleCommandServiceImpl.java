@@ -11,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,7 +25,6 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
     public Optional<Vehicle> handle(CreateVehicleCommand command) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
 
         if (!userDetails.isSeller()) {
             throw new IllegalStateException("Only authorized users can create a vehicle");
@@ -43,29 +41,37 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
         return Optional.of(createdVehicle);
     }
 
-
     @Transactional
-    public Optional<Vehicle> handle(UpdateVehicleCommand command) {
+    public Optional<Vehicle> handle(UpdateVehicleCommand command, int vehicleId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         long userId = userDetails.getId();
 
-        List<Vehicle> vehicles = vehicleRepository.findByProfileId(userId);
 
-        if (vehicles.isEmpty()) {
-            throw new IllegalStateException("No vehicles found for user with ID: " + userId);
+        Optional<Vehicle> vehicleOptional = vehicleRepository.findById(vehicleId);
+
+
+        if (vehicleOptional.isEmpty() || vehicleOptional.get().getProfileId() != userId) {
+            throw new IllegalStateException("The vehicle does not exist or you do not have permission to update it.");
         }
 
-        Vehicle vehicle = vehicles.get(0);
-
-        if (vehicle.getProfileId() != userId) {
-            throw new IllegalStateException("The profileId of the vehicle does not match the authenticated user's ID");
-        }
-
+        Vehicle vehicle = vehicleOptional.get();
         vehicle.updateVehicleInfo(command);
         vehicle.setProfileId(userId);
+
         var updatedVehicle = vehicleRepository.save(vehicle);
         return Optional.of(updatedVehicle);
     }
 
+    @Override
+    @Transactional
+    public void deleteVehicle(int vehicleId, long userId) {
+        Optional<Vehicle> vehicleOptional = vehicleRepository.findById(vehicleId);
+
+        if (vehicleOptional.isEmpty() || vehicleOptional.get().getProfileId() != userId) {
+            throw new IllegalStateException("The vehicle does not exist or you do not have permission to delete it.");
+        }
+
+        vehicleRepository.delete(vehicleOptional.get());
+    }
 }
