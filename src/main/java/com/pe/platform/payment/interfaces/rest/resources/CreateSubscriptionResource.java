@@ -1,4 +1,7 @@
 package com.pe.platform.payment.interfaces.rest.resources;
 
-public record CreateSubscriptionResource() {
+public record CreateSubscriptionResource ( Integer price, String description, Boolean paid) {
+
+
 }
+
