@@ -1,5 +1,6 @@
 package com.pe.platform.payment.application.internal.services.commandservices;
 
+import com.pe.platform.iam.infrastructure.authorization.sfs.model.UserDetailsImpl;
 import com.pe.platform.payment.domain.model.aggregates.Subscription;
 import com.pe.platform.payment.domain.model.commands.CreateSubscriptionCommand;
 import com.pe.platform.payment.domain.model.commands.UpdateSubscriptionCommand;

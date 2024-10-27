@@ -8,22 +8,20 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
 public class AuditableModel {
     // marca farm
     @Id
-    @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 // marca farm
 
-    @Getter
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private Date createdAt;
 
-    @Getter
     @LastModifiedDate
     @Column(nullable = false)
     private Date updatedAt;

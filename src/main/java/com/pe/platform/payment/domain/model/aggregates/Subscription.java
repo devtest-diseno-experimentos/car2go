@@ -1,5 +1,6 @@
 package com.pe.platform.payment.domain.model.aggregates;
 
+import com.pe.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 
