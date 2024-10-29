@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface ProfileQueryService {
     Optional<Profile> handle(GetProfileByIdQuery query);
-    Optional<Profile> handle(GetAllProfilesQuery query);
-    List<Profile> handle(GetProfileByRoleQuery query);
+    List<Profile> handle(GetAllProfilesQuery query);
+    // List<Profile> handle(GetProfileByRoleQuery query);
 
 }
