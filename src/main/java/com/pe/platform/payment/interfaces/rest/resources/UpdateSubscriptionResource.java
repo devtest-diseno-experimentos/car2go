@@ -1,4 +1,4 @@
-package com.pe.platform.payment.interfaces.interfaces.resources;
+package com.pe.platform.payment.interfaces.rest.resources;
 
 public record UpdateSubscriptionResource(
         String firstName, String lastName, String direction, String phone, String gender, String birthDate,
