@@ -8,6 +8,7 @@ public class Role {
 
     public static final String SELLER = "SELLER";
     public static final String BUYER = "BUYER";
+    public static final String MECHANIC = "MECHANIC";
 
     @Column(name = "role", nullable = false)
     private String value;
@@ -17,20 +18,23 @@ public class Role {
 
     // Constructor validado
     public Role(String value) {
-        if (!SELLER.equals(value) && !BUYER.equals(value)) {
+        if (!SELLER.equals(value) && !BUYER.equals(value) && !MECHANIC.equals(value)) {
             throw new IllegalArgumentException("Invalid role: " + value);
         }
         this.value = value;
     }
 
-    // Método de fábrica para SELLER
+    // Métodos de fábrica para cada rol
     public static Role seller() {
         return new Role(SELLER);
     }
 
-    // Método de fábrica para BUYER
     public static Role buyer() {
         return new Role(BUYER);
+    }
+
+    public static Role mechanic() {
+        return new Role(MECHANIC);
     }
 
     public String getValue() {
