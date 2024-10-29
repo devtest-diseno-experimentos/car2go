@@ -31,10 +31,9 @@ public class SubscriptionCommandServiceImpl implements SubscriptionCommandServic
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
 
         boolean hasRequiredRole = authorities.stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_FARMER"));
+                .anyMatch(a -> a.getAuthority().equals("ROLE_SELLER"));
 
         if (hasRequiredRole) {
-            // Check if a subscription already exists for this user
             Optional<Subscription> existingSubscription = subscriptionRepository.findByProfileId(userDetails.getId());
             if (existingSubscription.isPresent()) {
                 throw new IllegalStateException("A subscription already exists for this user");
@@ -45,7 +44,7 @@ public class SubscriptionCommandServiceImpl implements SubscriptionCommandServic
             subscriptionRepository.save(subscription);
             return Optional.of(subscription);
         } else {
-            throw new SecurityException(" Only farmers can create a subscription");
+            throw new SecurityException(" Only sellers can create a subscription");
         }
     }
     @Override

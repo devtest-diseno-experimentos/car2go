@@ -27,7 +27,7 @@ public class Subscription extends AuditableAbstractAggregateRoot<Subscription> {
     public Subscription(Integer price, String description, Boolean paid,Long profileId) {
         this.price = price;
         this.description = description;
-        this.paid = false; //change
+        this.paid = false;
         this.profileId=profileId;
     }
     public void updateToPaid() {
