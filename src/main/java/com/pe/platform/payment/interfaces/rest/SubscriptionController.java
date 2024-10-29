@@ -55,7 +55,7 @@ public class SubscriptionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SubscriptionResource> getSubscriptionById(@PathVariable int id) {
-        var getSubscriptionByIdQuery = new GetSubscriptionByIdQuery(id);
+        var getSubscriptionByIdQuery = new GetSubscriptionByIdQuery((long) id);
         var subscription = subscriptionQueryService.handle(getSubscriptionByIdQuery);
         if(subscription.isEmpty()) return ResponseEntity.notFound().build();
         var subscriptionResource = SubscriptionResourceFromEntityAssembler.toResourceFromEntity(subscription.get());
