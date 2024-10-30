@@ -16,7 +16,7 @@ public record VehicleResource(int id,
                               String plate,
                               String location,
                               String description,
-                              String image,
+                              java.util.List<String> image,
                               Long profileId,
                               String fuel,
                               int speed) {
