@@ -22,7 +22,7 @@ public class UpdateVehicleCommandFromResourceAssembler {
                 resource.plate(),
                 resource.location(),
                 resource.description(),
-                resource.image(),
+                resource.images(),  // Cambiado para aceptar lista de imágenes
                 resource.fuel(),
                 resource.speed()
         );
