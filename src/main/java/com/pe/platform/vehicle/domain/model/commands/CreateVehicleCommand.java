@@ -1,5 +1,7 @@
 package com.pe.platform.vehicle.domain.model.commands;
 
+import java.util.List;
+
 public record CreateVehicleCommand(String name,
                                    String phone,
                                    String email,
@@ -15,7 +17,7 @@ public record CreateVehicleCommand(String name,
                                    String plate,
                                    String location,
                                    String description,
-                                   String image,
+                                   List<String> images,  // Cambiado a lista de imágenes
                                    String fuel,
                                    int speed) {
 
@@ -64,6 +66,9 @@ public record CreateVehicleCommand(String name,
         }
         if (description == null || description.isBlank()) {
             throw new IllegalArgumentException("Description cannot be null or empty");
+        }
+        if (images == null || images.isEmpty()) {
+            throw new IllegalArgumentException("At least one image is required");
         }
         if (fuel == null || fuel.isBlank()) {
             throw new IllegalArgumentException("Fuel cannot be null or empty");

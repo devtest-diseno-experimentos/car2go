@@ -1,5 +1,7 @@
 package com.pe.platform.vehicle.interfaces.rest.resources;
 
+import java.util.List;
+
 public record CreateVehicleResource(String name,
                                     String phone,
                                     String email,
@@ -15,7 +17,7 @@ public record CreateVehicleResource(String name,
                                     String plate,
                                     String location,
                                     String description,
-                                    String image,
+                                    List<String> images, // Cambiado para una lista de imágenes
                                     String fuel,
                                     int speed) {
 
@@ -64,6 +66,9 @@ public record CreateVehicleResource(String name,
         }
         if (description == null || description.isBlank()) {
             throw new IllegalArgumentException("Description cannot be null or empty");
+        }
+        if (images == null || images.isEmpty()) {  // Validación de imágenes
+            throw new IllegalArgumentException("At least one image is required");
         }
         if (fuel == null || fuel.isBlank()) {
             throw new IllegalArgumentException("Fuel type cannot be null or empty");
