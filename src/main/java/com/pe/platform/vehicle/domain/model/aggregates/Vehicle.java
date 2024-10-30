@@ -1,5 +1,6 @@
 package com.pe.platform.vehicle.domain.model.aggregates;
 
+import com.pe.platform.vehicle.common.converters.ListToStringConverter;
 import com.pe.platform.vehicle.domain.model.commands.CreateVehicleCommand;
 import com.pe.platform.vehicle.domain.model.commands.UpdateVehicleCommand;
 import jakarta.persistence.*;
@@ -10,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -66,8 +68,10 @@ public class Vehicle {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false, columnDefinition = "LONGTEXT")
-    private String image;
+    @Convert(converter = ListToStringConverter.class)
+    @Column(name = "images", columnDefinition = "LONGTEXT")
+    private List<String> images;
+
 
     @Column(nullable = false)
     private String fuel;
@@ -87,7 +91,6 @@ public class Vehicle {
 
     protected Vehicle() {}
 
-
     public Vehicle(CreateVehicleCommand command) {
         this.name = command.name();
         this.phone = command.phone();
@@ -98,17 +101,16 @@ public class Vehicle {
         this.year = command.year();
         this.price = command.price();
         this.transmission = command.transmission();
-        this.engine =  command.engine();
+        this.engine = command.engine();
         this.mileage = command.mileage();
-        this.doors =   command.doors();
-        this.plate =   command.plate();
+        this.doors = command.doors();
+        this.plate = command.plate();
         this.location = command.location();
         this.description = command.description();
-        this.image = command.image();
+        this.images = command.images(); // Asignar lista de imágenes
         this.fuel = command.fuel();
         this.speed = command.speed();
     }
-
 
     public Vehicle updateVehicleInfo(UpdateVehicleCommand command) {
         this.name = command.name();
@@ -120,23 +122,22 @@ public class Vehicle {
         this.year = command.year();
         this.price = command.price();
         this.transmission = command.transmission();
-        this.engine =  command.engine();
+        this.engine = command.engine();
         this.mileage = command.mileage();
-        this.doors =   command.doors();
-        this.plate =   command.plate();
+        this.doors = command.doors();
+        this.plate = command.plate();
         this.location = command.location();
         this.description = command.description();
-        this.image = command.image();
+        this.images = command.images(); // Actualizar lista de imágenes
         this.fuel = command.fuel();
         this.speed = command.speed();
 
-        return null;
+        return this;
     }
 
     public void setProfileId(long profileId) {
         this.profileId = profileId;
     }
-
 
     public long getUserId() {
         return profileId;
