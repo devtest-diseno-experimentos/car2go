@@ -1,19 +1,18 @@
 package com.pe.platform.vehicle.interfaces.rest;
 
 import com.pe.platform.vehicle.domain.model.aggregates.Vehicle;
+import com.pe.platform.vehicle.domain.model.commands.CreateVehicleCommand;
 import com.pe.platform.vehicle.domain.model.commands.UpdateVehicleCommand;
-import com.pe.platform.vehicle.domain.model.queries.GetVehicleByIdQuery;
-import com.pe.platform.vehicle.domain.model.queries.GetAllVehicleByLocationQuery;
-import com.pe.platform.vehicle.domain.model.queries.GetAllVehicleByProfileId;
-import com.pe.platform.vehicle.domain.model.queries.GetAllVehicleQuery;
+import com.pe.platform.vehicle.domain.model.queries.*;
+import com.pe.platform.vehicle.domain.model.valueobjects.vehicleStatus;
 import com.pe.platform.vehicle.domain.services.VehicleCommandService;
 import com.pe.platform.vehicle.domain.services.VehicleQueryService;
 import com.pe.platform.vehicle.interfaces.rest.resources.CreateVehicleResource;
-import com.pe.platform.vehicle.interfaces.rest.resources.VehicleResource;
 import com.pe.platform.vehicle.interfaces.rest.resources.UpdateVehicleResource;
+import com.pe.platform.vehicle.interfaces.rest.resources.VehicleResource;
 import com.pe.platform.vehicle.interfaces.rest.transform.CreateVehicleCommandFromResourceAssembler;
-import com.pe.platform.vehicle.interfaces.rest.transform.VehicleResourceFromEntityAssembler;
 import com.pe.platform.vehicle.interfaces.rest.transform.UpdateVehicleCommandFromResourceAssembler;
+import com.pe.platform.vehicle.interfaces.rest.transform.VehicleResourceFromEntityAssembler;
 import com.pe.platform.iam.infrastructure.authorization.sfs.model.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +28,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RestController
 @RequestMapping("/api/v1/vehicle")
 public class VehicleController {
+
     private final VehicleCommandService vehicleCommandService;
     private final VehicleQueryService vehicleQueryService;
 
@@ -41,9 +41,7 @@ public class VehicleController {
     @PostMapping
     public ResponseEntity<VehicleResource> createVehicle(@RequestBody CreateVehicleResource resource) {
         Optional<Vehicle> vehicle = vehicleCommandService.handle(CreateVehicleCommandFromResourceAssembler.toCommandFromResource(resource));
-        return vehicle.map(resp ->
-                        new ResponseEntity<>(VehicleResourceFromEntityAssembler
-                                .toResourceFromEntity(resp), CREATED))
+        return vehicle.map(resp -> new ResponseEntity<>(VehicleResourceFromEntityAssembler.toResourceFromEntity(resp), CREATED))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
@@ -102,6 +100,7 @@ public class VehicleController {
         var vehicleResources = vehicles.stream().map(VehicleResourceFromEntityAssembler::toResourceFromEntity).toList();
         return ResponseEntity.ok(vehicleResources);
     }
+
     @PreAuthorize("hasAuthority('ROLE_SELLER')")
     @DeleteMapping("/{vehicleId}")
     public ResponseEntity<Void> deleteVehicle(@PathVariable int vehicleId) {
@@ -116,5 +115,7 @@ public class VehicleController {
             return ResponseEntity.status(403).build();
         }
     }
+
+
 
 }
