@@ -1,6 +1,5 @@
 package com.pe.platform.iam.domain.model.commands;
 
-
 import java.util.List;
 
 import com.pe.platform.iam.domain.model.entities.Role;

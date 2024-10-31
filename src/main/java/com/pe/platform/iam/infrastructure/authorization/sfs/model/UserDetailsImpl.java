@@ -12,6 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * This class is responsible for providing the user details to the Spring Security framework.
+ * It implements the UserDetails interface.
+ */
 @Getter
 @EqualsAndHashCode
 public class UserDetailsImpl implements UserDetails {
@@ -38,6 +42,11 @@ public class UserDetailsImpl implements UserDetails {
         this.enabled = true;
     }
 
+    /**
+     * This method is responsible for building the UserDetailsImpl object from the User object.
+     * @param user The user object.
+     * @return The UserDetailsImpl object.
+     */
     public static UserDetailsImpl build(User user) {
         var authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getStringName()))

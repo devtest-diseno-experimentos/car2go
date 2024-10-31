@@ -14,6 +14,13 @@ import com.pe.platform.iam.infrastructure.persistence.jpa.repositories.UserRepos
 
 import java.util.Optional;
 
+/**
+ * User command service implementation
+ * <p>
+ *     This class implements the {@link UserCommandService} interface and provides the implementation for the
+ *     {@link SignInCommand} and {@link SignUpCommand} commands.
+ * </p>
+ */
 @Service
 public class UserCommandServiceImpl implements UserCommandService {
     private final UserRepository userRepository;
@@ -27,6 +34,15 @@ public class UserCommandServiceImpl implements UserCommandService {
         this.tokenService = tokenService;
         this.roleRepository = roleRepository;
     }
+
+    /**
+     * Handle the sign-up command
+     * <p>
+     *     This method handles the {@link SignUpCommand} command and returns the user.
+     * </p>
+     * @param command the sign-up command containing the username and password
+     * @return the created user
+     */
     @Override
     public Optional<User> handle(SignUpCommand command) {
         if (userRepository.existsByUsername(command.username()))
@@ -48,6 +64,15 @@ public class UserCommandServiceImpl implements UserCommandService {
         return userRepository.findByUsername(command.username());
     }
 
+    /**
+     * Handle the sign-in command
+     * <p>
+     *     This method handles the {@link SignInCommand} command and returns the user and the token.
+     * </p>
+     * @param command the sign-in command containing the username and password
+     * @return and optional containing the user matching the username and the generated token
+     * @throws RuntimeException if the user is not found or the password is invalid
+     */
     @Override
     public Optional<ImmutablePair<User, String>> handle(SignInCommand command) {
         var user = userRepository.findByUsername(command.username());
