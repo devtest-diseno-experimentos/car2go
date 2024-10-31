@@ -1,4 +1,4 @@
-package com.pe.platform.interaction.interfaces.rest;
+package com.pe.platform.interaction.interfaces;
 
 import com.pe.platform.interaction.domain.model.aggregates.Favorite;
 import com.pe.platform.interaction.domain.services.FavoriteCommandService;

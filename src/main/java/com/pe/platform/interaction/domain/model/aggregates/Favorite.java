@@ -27,7 +27,7 @@ public class Favorite {
     private LocalDateTime createdAt;
 
     public Favorite() {
-        // Constructor vacío
+
     }
 
     public Favorite(Vehicle vehicle, long profileId) {
