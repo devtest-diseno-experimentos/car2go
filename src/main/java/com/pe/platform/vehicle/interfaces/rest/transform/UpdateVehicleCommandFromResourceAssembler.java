@@ -1,6 +1,7 @@
 package com.pe.platform.vehicle.interfaces.rest.transform;
 
 import com.pe.platform.vehicle.domain.model.commands.UpdateVehicleCommand;
+import com.pe.platform.vehicle.domain.model.valueobjects.vehicleStatus;
 import com.pe.platform.vehicle.interfaces.rest.resources.UpdateVehicleResource;
 
 public class UpdateVehicleCommandFromResourceAssembler {
@@ -22,9 +23,10 @@ public class UpdateVehicleCommandFromResourceAssembler {
                 resource.plate(),
                 resource.location(),
                 resource.description(),
-                resource.images(),  // Cambiado para aceptar lista de imágenes
+                resource.images(),
                 resource.fuel(),
-                resource.speed()
+                resource.speed(),
+                vehicleStatus.valueOf(resource.status().toUpperCase())
         );
     }
 }

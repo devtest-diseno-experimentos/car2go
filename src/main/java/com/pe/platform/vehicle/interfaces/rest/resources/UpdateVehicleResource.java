@@ -2,24 +2,27 @@ package com.pe.platform.vehicle.interfaces.rest.resources;
 
 import java.util.List;
 
-public record UpdateVehicleResource(String name,
-                                    String phone,
-                                    String email,
-                                    String brand,
-                                    String model,
-                                    String color,
-                                    String year,
-                                    double price,
-                                    String transmission,
-                                    String engine,
-                                    int mileage,
-                                    String doors,
-                                    String plate,
-                                    String location,
-                                    String description,
-                                    List<String> images, // Cambiado a lista de imágenes
-                                    String fuel,
-                                    int speed) {
+public record UpdateVehicleResource(
+        String name,
+        String phone,
+        String email,
+        String brand,
+        String model,
+        String color,
+        String year,
+        double price,
+        String transmission,
+        String engine,
+        int mileage,
+        String doors,
+        String plate,
+        String location,
+        String description,
+        List<String> images,
+        String fuel,
+        int speed,
+        String status
+) {
 
     public UpdateVehicleResource {
         if (name == null || name.isBlank()) {
@@ -76,5 +79,12 @@ public record UpdateVehicleResource(String name,
         if (speed <= 0) {
             throw new IllegalArgumentException("Speed must be greater than zero");
         }
+        if (status == null || status.isBlank()) {
+            throw new IllegalArgumentException("Status cannot be null or empty");
+        }
+        // Opcional: Validar que el status sea uno de los valores permitidos
+        // if (!status.equals("not reviewed") && !status.equals("approved") && !status.equals("rejected")) {
+        //     throw new IllegalArgumentException("Invalid status value");
+        // }
     }
 }

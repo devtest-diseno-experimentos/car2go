@@ -1,28 +1,32 @@
 package com.pe.platform.vehicle.domain.model.commands;
 
+import com.pe.platform.vehicle.domain.model.valueobjects.vehicleStatus;
+
 import java.util.List;
 
-public record UpdateVehicleCommand( String name,
-                                    String phone,
-                                    String email,
-                                    String brand,
-                                    String model,
-                                    String color,
-                                    String year,
-                                    double price,
-                                    String transmission,
-                                    String engine,
-                                    double mileage,
-                                    String doors,
-                                    String plate,
-                                    String location,
-                                    String description,
-                                    List<String> images, // Cambiado a lista de imágenes
-                                    String fuel,
-                                    int speed) {
+public record UpdateVehicleCommand(
+        String name,
+        String phone,
+        String email,
+        String brand,
+        String model,
+        String color,
+        String year,
+        double price,
+        String transmission,
+        String engine,
+        double mileage,
+        String doors,
+        String plate,
+        String location,
+        String description,
+        List<String> images,
+        String fuel,
+        int speed,
+        vehicleStatus status
+) {
 
     public UpdateVehicleCommand {
-
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Name cannot be null or empty");
         }
@@ -53,8 +57,8 @@ public record UpdateVehicleCommand( String name,
         if (engine == null || engine.isBlank()) {
             throw new IllegalArgumentException("Engine cannot be null or empty");
         }
-        if (mileage <= 0) {
-            throw new IllegalArgumentException("Mileage must be greater than zero");
+        if (mileage < 0) {
+            throw new IllegalArgumentException("Mileage cannot be negative");
         }
         if (doors == null || doors.isBlank()) {
             throw new IllegalArgumentException("Doors cannot be null or empty");
@@ -68,7 +72,7 @@ public record UpdateVehicleCommand( String name,
         if (description == null || description.isBlank()) {
             throw new IllegalArgumentException("Description cannot be null or empty");
         }
-        if (images == null || images.isEmpty()) {  // Validación de lista de imágenes
+        if (images == null || images.isEmpty()) {
             throw new IllegalArgumentException("At least one image is required");
         }
         if (fuel == null || fuel.isBlank()) {
@@ -76,6 +80,9 @@ public record UpdateVehicleCommand( String name,
         }
         if (speed <= 0) {
             throw new IllegalArgumentException("Speed must be greater than zero");
+        }
+        if (status == null) {
+            throw new IllegalArgumentException("Status cannot be null");
         }
     }
 }
