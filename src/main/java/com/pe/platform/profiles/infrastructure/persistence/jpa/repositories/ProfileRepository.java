@@ -10,5 +10,6 @@ import java.util.Optional;
 @Repository
 public interface ProfileRepository extends JpaRepository<Profile, Long> {
     Optional<Profile> findByEmail(String email);
-    List<Profile> findByRoleValue(String role);
+    Optional<Profile> findById(Long id);
+    Optional<Profile>findByProfileId(long profileId);
 }
