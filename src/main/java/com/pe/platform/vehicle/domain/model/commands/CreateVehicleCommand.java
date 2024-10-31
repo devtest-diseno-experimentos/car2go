@@ -17,7 +17,7 @@ public record CreateVehicleCommand(String name,
                                    String plate,
                                    String location,
                                    String description,
-                                   List<String> images,  // Cambiado a lista de imágenes
+                                   List<String> images,
                                    String fuel,
                                    int speed) {
 

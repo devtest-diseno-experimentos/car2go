@@ -22,7 +22,7 @@ public class CreateVehicleCommandFromResourceAssembler {
                 resource.plate(),
                 resource.location(),
                 resource.description(),
-                resource.images(),  // Cambiado para aceptar una lista de imágenes
+                resource.images(),
                 resource.fuel(),
                 resource.speed()
         );
