@@ -3,7 +3,6 @@ package com.pe.platform.profiles.application.internal.queryservices;
 import com.pe.platform.profiles.domain.model.aggregates.Profile;
 import com.pe.platform.profiles.domain.model.queries.GetAllProfilesQuery;
 import com.pe.platform.profiles.domain.model.queries.GetProfileByIdQuery;
-import com.pe.platform.profiles.domain.model.queries.GetProfileByRoleQuery;
 import com.pe.platform.profiles.domain.services.ProfileQueryService;
 import com.pe.platform.profiles.infrastructure.persistence.jpa.repositories.ProfileRepository;
 import org.springframework.stereotype.Service;
