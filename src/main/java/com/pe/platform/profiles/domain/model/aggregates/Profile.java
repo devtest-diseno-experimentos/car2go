@@ -1,15 +1,19 @@
 package com.pe.platform.profiles.domain.model.aggregates;
 
+import com.pe.platform.iam.domain.model.entities.Role;
 import com.pe.platform.profiles.domain.model.commands.CreateProfileCommand;
+import com.pe.platform.profiles.domain.model.commands.UpdateProfileCommand;
 import com.pe.platform.profiles.domain.model.valueobjects.PersonName;
-import com.pe.platform.profiles.domain.model.valueobjects.Role;
 import com.pe.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
-public class Profile extends AuditableAbstractAggregateRoot<Profile> {
+public class Profile {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
     @Embedded
     private PersonName name;
@@ -17,47 +21,65 @@ public class Profile extends AuditableAbstractAggregateRoot<Profile> {
     @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
+    private String image;
+
     @Column(nullable = false)
     private String dni;
 
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false, columnDefinition = "LONGTEXT")
-    private String image;
+    @Column(nullable = false)
+    private String phone;
 
     @Column(nullable = false)
-    private String phoneNumber;
+    private Long profileId;
 
-    @Embedded
-    private Role role;
+    protected Profile() { }
 
-    @Column
-    private String password;
-
-    protected Profile() {
-    }
-
-    public Profile(String firstName, String lastName, String email, String dni, String address, String image, String phoneNumber, String role, String password) {
-        this.name = new PersonName(firstName, lastName);
-        this.email = email;
-        this.dni = dni;
-        this.address = address;
-        this.image = image;
-        this.phoneNumber = phoneNumber;
-        this.role = new Role(role);
-        this.password = password;
-    }
-
-    public Profile(CreateProfileCommand command){
+    // comands
+    public Profile (CreateProfileCommand command, Long profileId) {
         this.name = new PersonName(command.firstName(), command.lastName());
         this.email = command.email();
+        this.image = command.image();
         this.dni = command.dni();
         this.address = command.address();
+        this.phone = command.phone();
+        this.profileId = profileId;
+    }
+
+    public Profile (UpdateProfileCommand command) {
+        this.name = new PersonName(command.firstName(), command.lastName());
+        this.email = command.email();
         this.image = command.image();
-        this.phoneNumber = command.phoneNumber();
-        this.role = new Role(command.role());
-        this.password = command.password();
+        this.dni = command.dni();
+        this.address = command.address();
+        this.phone = command.phone();
+    }
+
+    public void setProfileId(long profileId) {
+        this.profileId = profileId;
+    }
+
+    public long getProfilerId() {
+        return profileId;
+    }
+
+    public String getFirstName() {
+        return name.getFirstName();
+    }
+
+    public  String getLastName() {
+        return name.getLastName();
+    }
+
+    public void updateName(String firstName, String lastName) {
+        this.name = new PersonName(firstName, lastName);
+    }
+
+    public int getId() {
+        return id;
     }
 
 }

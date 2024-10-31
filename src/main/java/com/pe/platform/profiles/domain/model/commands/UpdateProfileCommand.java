@@ -1,6 +1,6 @@
 package com.pe.platform.profiles.domain.model.commands;
 
-public record CreateProfileCommand(String firstName,
+public record UpdateProfileCommand(String firstName,
                                    String lastName,
                                    String email,
                                    String image,
@@ -8,7 +8,7 @@ public record CreateProfileCommand(String firstName,
                                    String address,
                                    String phone) {
 
-    public CreateProfileCommand {
+    public UpdateProfileCommand {
         validateNonEmpty(firstName, "First name");
         validateNonEmpty(lastName, "Last name");
         validateNonEmpty(email, "Email");
