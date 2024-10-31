@@ -1,8 +1,11 @@
 package com.pe.platform.vehicle.domain.model.aggregates;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pe.platform.vehicle.common.converters.ListToStringConverter;
 import com.pe.platform.vehicle.domain.model.commands.CreateVehicleCommand;
 import com.pe.platform.vehicle.domain.model.commands.UpdateVehicleCommand;
+import com.pe.platform.vehicle.domain.model.valueobjects.vehicleStatus;
+import com.pe.platform.interaction.domain.model.aggregates.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -72,7 +75,6 @@ public class Vehicle {
     @Column(name = "images", columnDefinition = "LONGTEXT")
     private List<String> images;
 
-
     @Column(nullable = false)
     private String fuel;
 
@@ -88,6 +90,14 @@ public class Vehicle {
 
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private vehicleStatus status;
+
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Review> reviews;
 
     protected Vehicle() {}
 
@@ -107,9 +117,10 @@ public class Vehicle {
         this.plate = command.plate();
         this.location = command.location();
         this.description = command.description();
-        this.images = command.images(); // Asignar lista de imágenes
+        this.images = command.images();
         this.fuel = command.fuel();
         this.speed = command.speed();
+        this.status = vehicleStatus.PENDING;
     }
 
     public Vehicle updateVehicleInfo(UpdateVehicleCommand command) {
@@ -128,9 +139,13 @@ public class Vehicle {
         this.plate = command.plate();
         this.location = command.location();
         this.description = command.description();
-        this.images = command.images(); // Actualizar lista de imágenes
+        this.images = command.images();
         this.fuel = command.fuel();
         this.speed = command.speed();
+
+        if (command.status() != null) {
+            this.status = command.status();
+        }
 
         return this;
     }

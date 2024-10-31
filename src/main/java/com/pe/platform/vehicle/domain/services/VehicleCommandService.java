@@ -13,4 +13,6 @@ public interface VehicleCommandService {
     Optional<Vehicle> handle(UpdateVehicleCommand command, int vehicleId);
 
     void deleteVehicle(int vehicleId, long userId);
+
+    Optional<Vehicle> findById(int vehicleId);
 }

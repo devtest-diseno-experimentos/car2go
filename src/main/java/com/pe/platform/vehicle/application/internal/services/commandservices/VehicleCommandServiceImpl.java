@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @Service
 public class VehicleCommandServiceImpl implements VehicleCommandService {
+
     private final VehicleRepository vehicleRepository;
 
     public VehicleCommandServiceImpl(VehicleRepository vehicleRepository) {
@@ -42,15 +43,13 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
     }
 
     @Transactional
+    @Override
     public Optional<Vehicle> handle(UpdateVehicleCommand command, int vehicleId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         long userId = userDetails.getId();
 
-
         Optional<Vehicle> vehicleOptional = vehicleRepository.findById(vehicleId);
-
-
         if (vehicleOptional.isEmpty() || vehicleOptional.get().getProfileId() != userId) {
             throw new IllegalStateException("The vehicle does not exist or you do not have permission to update it.");
         }
@@ -72,6 +71,12 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
             throw new IllegalStateException("The vehicle does not exist or you do not have permission to delete it.");
         }
 
-        vehicleRepository.delete(vehicleOptional.get());
+        Vehicle vehicle = vehicleOptional.get();
+        vehicleRepository.delete(vehicle);
+    }
+
+    @Override
+    public Optional<Vehicle> findById(int vehicleId) {
+        return vehicleRepository.findById(vehicleId);
     }
 }
