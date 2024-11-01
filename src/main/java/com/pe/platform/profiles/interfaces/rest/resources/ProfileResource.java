@@ -1,5 +1,8 @@
 package com.pe.platform.profiles.interfaces.rest.resources;
 
+import com.pe.platform.profiles.domain.model.valueobjects.PaymentMethod;
+import java.util.List;
+
 public record ProfileResource(
         Long id,
         String firstName,
@@ -9,4 +12,6 @@ public record ProfileResource(
         String dni,
         String address,
         String phone,
-        Long profileId) { }
+        Long profileId,
+        List<PaymentMethod> paymentMethods
+) { }

@@ -5,7 +5,8 @@ import com.pe.platform.profiles.interfaces.rest.resources.ProfileResource;
 
 public class ProfileResourceFromEntityAssembler {
     public static ProfileResource toResourceFromEntity(Profile entity) {
-        return new ProfileResource((long) entity.getId(),
+        return new ProfileResource(
+                (long) entity.getId(),
                 entity.getFirstName(),
                 entity.getLastName(),
                 entity.getEmail(),
@@ -13,8 +14,8 @@ public class ProfileResourceFromEntityAssembler {
                 entity.getDni(),
                 entity.getAddress(),
                 entity.getPhone(),
-                entity.getProfileId());
-
+                entity.getProfileId(),
+                entity.getPaymentMethods()
+        );
     }
-
 }

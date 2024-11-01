@@ -7,4 +7,6 @@ public record UpdateProfileResource(
         String image,
         String dni,
         String address,
-        String phone) { }
+        String phone
+) {
+}

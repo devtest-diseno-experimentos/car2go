@@ -1,16 +1,19 @@
 package com.pe.platform.profiles.domain.model.aggregates;
 
-import com.pe.platform.iam.domain.model.entities.Role;
 import com.pe.platform.profiles.domain.model.commands.CreateProfileCommand;
 import com.pe.platform.profiles.domain.model.commands.UpdateProfileCommand;
+import com.pe.platform.profiles.domain.model.valueobjects.PaymentMethod;
 import com.pe.platform.profiles.domain.model.valueobjects.PersonName;
-import com.pe.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
 public class Profile {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -36,10 +39,13 @@ public class Profile {
     @Column(nullable = false)
     private Long profileId;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "profile_id")
+    private List<PaymentMethod> paymentMethods = new ArrayList<>();
+
     protected Profile() { }
 
-    // comands
-    public Profile (CreateProfileCommand command, Long profileId) {
+    public Profile(CreateProfileCommand command, Long profileId) {
         this.name = new PersonName(command.firstName(), command.lastName());
         this.email = command.email();
         this.image = command.image();
@@ -49,7 +55,7 @@ public class Profile {
         this.profileId = profileId;
     }
 
-    public Profile (UpdateProfileCommand command) {
+    public Profile(UpdateProfileCommand command) {
         this.name = new PersonName(command.firstName(), command.lastName());
         this.email = command.email();
         this.image = command.image();
@@ -70,7 +76,7 @@ public class Profile {
         return name.getFirstName();
     }
 
-    public  String getLastName() {
+    public String getLastName() {
         return name.getLastName();
     }
 
@@ -78,8 +84,29 @@ public class Profile {
         this.name = new PersonName(firstName, lastName);
     }
 
+    public void addPaymentMethod(PaymentMethod paymentMethod) {
+        if (paymentMethods.size() >= 3) {
+            throw new IllegalArgumentException("Cannot add more than 3 payment methods");
+        }
+        paymentMethods.add(paymentMethod);
+    }
+
+    public boolean removePaymentMethodById(Long paymentMethodId) {
+        return paymentMethods.removeIf(paymentMethod -> paymentMethod.getId().equals(paymentMethodId));
+    }
+
+    public boolean updatePaymentMethod(Long paymentMethodId, PaymentMethod updatedPaymentMethod) {
+        for (PaymentMethod paymentMethod : paymentMethods) {
+            if (paymentMethod.getId().equals(paymentMethodId)) {
+                paymentMethod.setType(updatedPaymentMethod.getType());
+                paymentMethod.setDetails(updatedPaymentMethod.getDetails());
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int getId() {
         return id;
     }
-
 }
