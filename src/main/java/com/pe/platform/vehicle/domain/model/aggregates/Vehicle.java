@@ -95,6 +95,7 @@ public class Vehicle {
     @Column(nullable = false)
     private vehicleStatus status;
 
+
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Review> reviews;

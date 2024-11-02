@@ -43,6 +43,8 @@ public class Profile {
     @JoinColumn(name = "profile_id")
     private List<PaymentMethod> paymentMethods = new ArrayList<>();
 
+    private static final int MAX_PAYMENT_METHODS = 3;
+
     protected Profile() { }
 
     public Profile(CreateProfileCommand command, Long profileId) {
@@ -68,7 +70,7 @@ public class Profile {
         this.profileId = profileId;
     }
 
-    public long getProfilerId() {
+    public long getProfileId() {
         return profileId;
     }
 
@@ -85,8 +87,8 @@ public class Profile {
     }
 
     public void addPaymentMethod(PaymentMethod paymentMethod) {
-        if (paymentMethods.size() >= 3) {
-            throw new IllegalArgumentException("Cannot add more than 3 payment methods");
+        if (paymentMethods.size() >= MAX_PAYMENT_METHODS) {
+            throw new IllegalArgumentException("Cannot add more than " + MAX_PAYMENT_METHODS + " payment methods");
         }
         paymentMethods.add(paymentMethod);
     }

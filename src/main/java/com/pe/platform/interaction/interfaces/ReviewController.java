@@ -81,4 +81,23 @@ public class ReviewController {
 
         return ResponseEntity.ok(reviewDTOs);
     }
+
+    @PreAuthorize("hasAuthority('ROLE_MECHANIC')")
+    @GetMapping("/me")
+    public ResponseEntity<List<ReviewDTO>> getMyReviews() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        String userId = String.valueOf(userDetails.getId());
+
+        List<Review> reviews = reviewCommandService.getAllReviews().stream()
+                .filter(review -> userId.equals(review.getReviewedBy()))
+                .toList();
+
+        List<ReviewDTO> reviewDTOs = reviews.stream()
+                .map(ReviewDTO::new)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(reviewDTOs);
+    }
+
 }
