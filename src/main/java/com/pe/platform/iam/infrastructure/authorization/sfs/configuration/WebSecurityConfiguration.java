@@ -31,6 +31,7 @@ import java.util.List;
  * It includes the authentication manager, the authentication provider, the password encoder and the authentication entry point.
  * </p>
  */
+
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
