@@ -38,6 +38,7 @@ public class AuditableAbstractAggregateRoot<T extends AbstractAggregateRoot<T>> 
      *
      * @param event the domain event to register
      */
+    
     public void addDomainEvent(Object event) {
         super.registerEvent(event);
     }
