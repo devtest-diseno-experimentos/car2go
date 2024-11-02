@@ -55,6 +55,7 @@ public class User extends AuditableAbstractAggregateRoot<User> {
      * @param role the role to add
      * @return the user with the added role
      */
+    
     public User addRole(Role role) {
         this.roles.add(role);
         return this;
