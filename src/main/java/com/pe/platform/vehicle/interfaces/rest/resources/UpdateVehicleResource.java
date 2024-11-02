@@ -82,9 +82,5 @@ public record UpdateVehicleResource(
         if (status == null || status.isBlank()) {
             throw new IllegalArgumentException("Status cannot be null or empty");
         }
-        // Opcional: Validar que el status sea uno de los valores permitidos
-        // if (!status.equals("not reviewed") && !status.equals("approved") && !status.equals("rejected")) {
-        //     throw new IllegalArgumentException("Invalid status value");
-        // }
     }
 }

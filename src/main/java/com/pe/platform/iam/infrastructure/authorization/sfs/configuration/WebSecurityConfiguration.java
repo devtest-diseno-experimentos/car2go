@@ -120,6 +120,7 @@ public class WebSecurityConfiguration {
                                 "api/v1/roles",
                                 "api/v1/users",
                                 "api/v1/vehicle/**",
+                                "api/v1/plans/**",
 
                                 "/api/v1/authentication/**",
                                 "/v3/api-docs/**",

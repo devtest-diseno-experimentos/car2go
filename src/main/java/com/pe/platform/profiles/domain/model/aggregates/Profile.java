@@ -86,6 +86,7 @@ public class Profile {
         this.name = new PersonName(firstName, lastName);
     }
 
+
     public void addPaymentMethod(PaymentMethod paymentMethod) {
         if (paymentMethods.size() >= MAX_PAYMENT_METHODS) {
             throw new IllegalArgumentException("Cannot add more than " + MAX_PAYMENT_METHODS + " payment methods");

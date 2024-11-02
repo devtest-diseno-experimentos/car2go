@@ -21,5 +21,5 @@ public record VehicleResource(
         Long profileId,
         String fuel,
         int speed,
-        String status  // Agregar el campo status como String
+        String status
 ) {}
