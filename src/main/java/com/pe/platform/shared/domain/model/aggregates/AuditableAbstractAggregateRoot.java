@@ -15,6 +15,7 @@ import java.util.Date;
  * @param <T> the type of the aggregate root
  * @summary The class is an abstract class that extends the {@link AbstractAggregateRoot} class and adds auditing fields to the class.
  */
+
 @Getter
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
