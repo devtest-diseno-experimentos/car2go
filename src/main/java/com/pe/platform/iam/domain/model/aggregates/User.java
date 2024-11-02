@@ -18,6 +18,7 @@ import com.pe.platform.shared.domain.model.aggregates.AuditableAbstractAggregate
  *
  * @see AuditableAbstractAggregateRoot
  */
+
 @Getter
 @Entity
 public class User extends AuditableAbstractAggregateRoot<User> {
