@@ -31,11 +31,6 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
             throw new IllegalStateException("Only authorized users can create a vehicle");
         }
 
-        var vehicleExists = vehicleRepository.findByName(command.name());
-        if (!vehicleExists.isEmpty()) {
-            throw new IllegalArgumentException("Vehicle with name " + command.name() + " already exists");
-        }
-
         var newVehicle = new Vehicle(command);
         newVehicle.setProfileId(userDetails.getId());
         var createdVehicle = vehicleRepository.save(newVehicle);

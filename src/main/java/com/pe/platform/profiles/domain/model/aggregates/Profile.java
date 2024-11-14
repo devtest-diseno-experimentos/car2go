@@ -15,7 +15,7 @@ import java.util.List;
 public class Profile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Embedded
@@ -85,6 +85,7 @@ public class Profile {
     public void updateName(String firstName, String lastName) {
         this.name = new PersonName(firstName, lastName);
     }
+
 
     public void addPaymentMethod(PaymentMethod paymentMethod) {
         if (paymentMethods.size() >= MAX_PAYMENT_METHODS) {
