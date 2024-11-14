@@ -5,10 +5,12 @@ import com.pe.platform.payment.domain.model.queries.GetAllTransactionsQuery;
 import com.pe.platform.payment.domain.model.queries.GetTransactionByIdQuery;
 import com.pe.platform.payment.domain.services.TransactionQueryService;
 import com.pe.platform.payment.infrastructure.persistence.jpa.TransactionRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class TransactionQueryServiceImpl implements TransactionQueryService {
 
     private final TransactionRepository transactionRepository;
