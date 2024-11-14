@@ -1,6 +1,9 @@
 package com.pe.platform.payment.interfaces.rest;
 
+import com.pe.platform.iam.domain.model.aggregates.User;
+import com.pe.platform.iam.infrastructure.authorization.sfs.model.UserDetailsImpl;
 import com.pe.platform.payment.domain.model.aggregates.Transaction;
+import com.pe.platform.payment.domain.model.queries.GetAllTransactionsQuery;
 import com.pe.platform.payment.domain.model.queries.GetTransactionByIdQuery;
 import com.pe.platform.payment.domain.services.TransactionCommandService;
 import com.pe.platform.payment.domain.services.TransactionQueryService;
@@ -12,9 +15,13 @@ import com.pe.platform.payment.interfaces.rest.transform.TransactionResourceFrom
 import com.pe.platform.payment.interfaces.rest.transform.UpdateTransactionCommandFromResourceAssembler;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -48,6 +55,23 @@ public class TransactionController {
         var transactionResource = TransactionResourceFromEntityAssembler.toResourceFromEntity(transaction.get());
         return ResponseEntity.ok(transactionResource);
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<List<TransactionResource>> getMyTransactions() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        var getAllTransactionsQuery = new GetAllTransactionsQuery();
+
+        var transactions = transactionQueryService.handle(getAllTransactionsQuery);
+
+        var transactionResources = transactions.stream()
+                .map(TransactionResourceFromEntityAssembler::toResourceFromEntity)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(transactionResources);
+    }
+
 
     @PutMapping("/{transactionId}")
     public ResponseEntity<TransactionResource> updateTransaction(@PathVariable Long transactionId, @RequestBody UpdateTransactionResource resource) {
