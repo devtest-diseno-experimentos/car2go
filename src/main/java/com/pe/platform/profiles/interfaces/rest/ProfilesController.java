@@ -143,4 +143,18 @@ public class ProfilesController {
         profileCommandService.save(profile);
         return ResponseEntity.ok(ProfileResourceFromEntityAssembler.toResourceFromEntity(profile));
     }
+
+    @GetMapping("/{profileId}")
+    public ResponseEntity<ProfileResource> getProfileById(@PathVariable Long profileId) {
+        var getProfileByIdQuery = new GetProfileByIdQuery(profileId);
+        var profileOptional = profileQueryService.handle(getProfileByIdQuery);
+
+        if (profileOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        }
+
+        var profileResource = ProfileResourceFromEntityAssembler.toResourceFromEntity(profileOptional.get());
+        return ResponseEntity.ok(profileResource);
+    }
 }

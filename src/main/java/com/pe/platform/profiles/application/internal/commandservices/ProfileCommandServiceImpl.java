@@ -98,4 +98,12 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
     public Optional<Profile> save(Profile profile) {
         return Optional.of(profileRepository.save(profile));
     }
+
+
+    @Override
+    public Optional<Profile> getProfileById(long profileId) {
+        return profileRepository.findByProfileId(profileId);
+    }
+
+
 }

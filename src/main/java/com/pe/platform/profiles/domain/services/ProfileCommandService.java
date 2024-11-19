@@ -9,10 +9,14 @@ import java.util.Optional;
 
 public interface ProfileCommandService {
     Optional<Profile> handle(CreateProfileCommand command);
+
     Optional<Profile> handle(UpdateProfileCommand command);
 
     Optional<Profile> addPaymentMethod(long profileId, PaymentMethod paymentMethod);
+
     Optional<Profile> removePaymentMethod(long profileId, PaymentMethod paymentMethod);
 
     Optional<Profile> save(Profile profile);
+
+    Optional<Profile> getProfileById(long profileId); // Nuevo método
 }
