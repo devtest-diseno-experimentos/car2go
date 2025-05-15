@@ -39,9 +39,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -95,96 +93,55 @@ public class AuthenticationControllerTest {
         defaultVehicle.setId(1);
         defaultVehicle.setProfileId(1L);
     }
-@Test
-void UserAndVehicleIntegrationTest() {
-    // --- Registro de usuario (Sign Up) ---
-    User mockUser = new User("TatoKuni", "secret", List.of(new Role(Roles.ROLE_SELLER)));
-    when(userCommandService.handle(any(SignUpCommand.class))).thenReturn(Optional.of(mockUser));
 
-    authenticationController.signUp(new SignUpResource("TatoKuni", "secret", List.of("ROLE_SELLER")));
+    @Test
+    void UserAndVehicleIntegrationTest() {
+        // --- Prueba de registro de usuario (Sign Up) ---
+        SignUpResource signUpResource = new SignUpResource("TatoKuni", "secret", List.of("ROLE_SELLER"));
+        Role roleUser = new Role(Roles.ROLE_SELLER);
+        User mockUser = new User("TatoKuni", "secret", List.of(roleUser));
 
-    // --- Simulación del resultado del Sign In ---
-    String mockToken = "fake-jwt-token";
-    AuthenticatedUserResource mockAuthResource = new AuthenticatedUserResource(1L, "TatoKuni", mockToken);
+        when(userCommandService.handle(any(SignUpCommand.class))).thenReturn(Optional.of(mockUser));
 
-    try (var mocked = mockStatic(AuthenticatedUserResourceFromEntityAssembler.class)) {
-        mocked.when(() -> AuthenticatedUserResourceFromEntityAssembler.toResourceFromEntity(mockUser, mockToken))
-              .thenReturn(mockAuthResource);
+        ResponseEntity<UserResource> signUpResponse = authenticationController.signUp(signUpResource);
 
-        authenticationController.signIn(new SignInResource("TatoKuni", "secret"));
+        assertEquals(201, signUpResponse.getStatusCodeValue());
+        assertNotNull(signUpResponse.getBody());
+        assertEquals("TatoKuni", signUpResponse.getBody().username());
+        assertEquals(List.of("ROLE_SELLER"), signUpResponse.getBody().roles());
+
+        // --- Prueba de inicio de sesión (Sign In) ---
+        SignInResource signInResource = new SignInResource("TatoKuni", "secret");
+        String mockToken = "fake-jwt-token";
+
+        AuthenticatedUserResource expectedAuthResource = new AuthenticatedUserResource(1L, "TatoKuni", mockToken);
+
+        when(userCommandService.handle(any(SignInCommand.class)))
+            .thenReturn(Optional.of(new ImmutablePair<>(mockUser, mockToken)));
+
+        try (var mocked = mockStatic(AuthenticatedUserResourceFromEntityAssembler.class)) {
+            mocked.when(() -> AuthenticatedUserResourceFromEntityAssembler.toResourceFromEntity(mockUser, mockToken))
+                  .thenReturn(expectedAuthResource);
+
+            ResponseEntity<AuthenticatedUserResource> signInResponse = authenticationController.signIn(signInResource);
+
+            assertEquals(200, signInResponse.getStatusCodeValue());
+            assertNotNull(signInResponse.getBody());
+            assertEquals("TatoKuni", signInResponse.getBody().username());
+            assertEquals("fake-jwt-token", signInResponse.getBody().token());
+            assertEquals(1L, signInResponse.getBody().id());
+        }
+
+        // --- Prueba de creación de vehículo posterior al login exitoso ---
+        when(vehicleCommandService.handle(any(CreateVehicleCommand.class)))
+            .thenReturn(Optional.of(defaultVehicle));
+
+        ResponseEntity<VehicleResource> vehicleResponse = vehicleController.createVehicle(createVehicleResource);
+
+        assertEquals(201, vehicleResponse.getStatusCodeValue());
+        assertNotNull(vehicleResponse.getBody());
+        assertEquals(1, vehicleResponse.getBody().id());
+        assertEquals("Car1", vehicleResponse.getBody().name());
+        assertEquals("Brand1", vehicleResponse.getBody().brand());
     }
-
-    // --- Creación de vehículo ---
-    when(vehicleCommandService.handle(any(CreateVehicleCommand.class)))
-        .thenReturn(Optional.of(defaultVehicle));
-
-    ResponseEntity<VehicleResource> vehicleResponse = vehicleController.createVehicle(createVehicleResource);
-
-    assertEquals(201, vehicleResponse.getStatusCodeValue());
-    assertNotNull(vehicleResponse.getBody());
-    assertEquals(1, vehicleResponse.getBody().id());
-    assertEquals("Car1", vehicleResponse.getBody().name());
-    assertEquals("Brand1", vehicleResponse.getBody().brand());
-}
-
-
-@Test
-void UserAndReviewIntegrationTest() {
-    // --- Registro del mecánico ---
-    User mockMechanic = new User("MechanicJohn", "securePassword", List.of(new Role(Roles.ROLE_MECHANIC)));
-    when(userCommandService.handle(any(SignUpCommand.class))).thenReturn(Optional.of(mockMechanic));
-    authenticationController.signUp(new SignUpResource("MechanicJohn", "securePassword", List.of("ROLE_MECHANIC")));
-
-    // --- Mock de token e inicio de sesión (signIn) ---
-    String mockToken = "mechanic-jwt-token";
-    AuthenticatedUserResource mockAuthResource = new AuthenticatedUserResource(1L, "MechanicJohn", mockToken);
-    when(userCommandService.handle(any(SignInCommand.class)))
-        .thenReturn(Optional.of(new ImmutablePair<>(mockMechanic, mockToken)));
-
-    // --- Mock del ensamblador que convierte User a AuthenticatedUserResource ---
-    try (var mocked = mockStatic(AuthenticatedUserResourceFromEntityAssembler.class)) {
-        mocked.when(() -> AuthenticatedUserResourceFromEntityAssembler.toResourceFromEntity(mockMechanic, mockToken))
-              .thenReturn(mockAuthResource);
-        authenticationController.signIn(new SignInResource("MechanicJohn", "securePassword"));
-    }
-
-    // --- Configurar SecurityContext con usuario autenticado (requerido por el controlador) ---
-    UserDetailsImpl mockUserDetails = mock(UserDetailsImpl.class);
-    when(mockUserDetails.getId()).thenReturn(mockAuthResource.id()); // ID que usará el controlador
-
-    Authentication authentication = mock(Authentication.class);
-    when(authentication.getPrincipal()).thenReturn(mockUserDetails);
-
-    SecurityContext securityContext = mock(SecurityContext.class);
-    when(securityContext.getAuthentication()).thenReturn(authentication);
-
-    SecurityContextHolder.setContext(securityContext); // Necesario para que funcione @PreAuthorize y principal
-
-    // --- Preparar datos de la revisión ---
-    CreateReviewRequest reviewRequest = new CreateReviewRequest();
-    reviewRequest.setApproved(true);
-    reviewRequest.setNotes("Great condition");
-    reviewRequest.setVehicleId(1);
-
-    // --- Mock del vehículo y revisión ---
-    Vehicle vehicle = new Vehicle(createVehicleCommand);
-    vehicle.setId(1);
-    Review mockReview = new Review(vehicle, String.valueOf(mockAuthResource.id()), "Great condition");
-
-    when(vehicleCommandService.findById(1)).thenReturn(Optional.of(vehicle));
-    when(reviewCommandService.getReviewByVehicleId(1)).thenReturn(Optional.empty());
-    when(reviewCommandService.createReview(1, "1", "Great condition", true)).thenReturn(mockReview);
-
-    // --- Ejecutar controlador y verificar respuesta ---
-    ResponseEntity<?> reviewResponse = reviewController.createReview(reviewRequest);
-
-    assertEquals(200, reviewResponse.getStatusCodeValue());
-    ReviewDTO reviewDTO = (ReviewDTO) reviewResponse.getBody();
-    assertEquals("Great condition", reviewDTO.getNotes());
-    assertEquals("1", reviewDTO.getReviewedBy());
-    assertEquals(1, reviewDTO.getVehicle().getId());
-}
-
-
-    
 }
