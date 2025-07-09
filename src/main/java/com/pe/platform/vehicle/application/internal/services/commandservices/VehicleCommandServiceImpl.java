@@ -71,6 +71,10 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
     }
 
     @Override
+    public void saveVehicle(Vehicle vehicle) {
+        vehicleRepository.save(vehicle);
+    }
+    @Override
     public Optional<Vehicle> findById(int vehicleId) {
         return vehicleRepository.findById(vehicleId);
     }

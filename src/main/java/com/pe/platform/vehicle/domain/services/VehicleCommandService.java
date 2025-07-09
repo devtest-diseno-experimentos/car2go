@@ -14,5 +14,7 @@ public interface VehicleCommandService {
 
     void deleteVehicle(int vehicleId, long userId);
 
+    void saveVehicle(Vehicle vehicle);
+
     Optional<Vehicle> findById(int vehicleId);
 }

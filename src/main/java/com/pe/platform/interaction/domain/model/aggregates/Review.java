@@ -20,7 +20,7 @@ public class Review {
     @Column(nullable = false)
     private String reviewedBy;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String notes;
 
     @Column(nullable = false)
